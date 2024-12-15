@@ -100,8 +100,12 @@
     </div>
 
     <script>
-        // 初始化 Supabase 客户端
-        const supabase = supabase.createClient('https://gfiaqcurffdlwaoacbax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmaWFxY3VyZmZkbHdhb2FjYmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxODUyNTMsImV4cCI6MjA0OTc2MTI1M30.1iov3e1de6nwNPMNMnLMPsnKRZrAcNFGZZLl0TigB18');
+        // 使用正确的方式初始化 Supabase 客户端
+        const { createClient } = supabase; // 从 supabase 这个全局对象中解构出 createClient 方法
+
+        const supabaseUrl = "https://gfiaqcurffdlwaoacbax.supabase.co"; // 替换为您的 Supabase URL
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmaWFxY3VyZmZkbHdhb2FjYmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxODUyNTMsImV4cCI6MjA0OTc2MTI1M30.1iov3e1de6nwNPMNMnLMPsnKRZrAcNFGZZLl0TigB18"; // 替换为您的 Supabase Anon Key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         // 获取表格元素
         const tableBody = document.getElementById("table-body");

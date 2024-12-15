@@ -1,21 +1,17 @@
 {
   "name": "tryout",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "start": "http-server"
-  },
-  "devDependencies": {
-    "vite": "^4.0.0",
-    "http-server": "^14.0.0"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
 }

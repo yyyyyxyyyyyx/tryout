@@ -1,38 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List</title>
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/images/logo.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #E6333E;
+            --background-color: #2D3034;
+            --text-light: #ffffff;
+            --text-gray: #a0aec0;
+            --border-color: #4a5568;
+            --font-primary: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-primary);
+        }
+
+        body {
+            background-color: var(--background-color);
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        /* 标题和 Logo 容器 */
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .tryout {
+            width: 200px;
+            height: auto;
+            margin-top: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: normal;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 表格样式 */
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1rem 0;
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            padding: 1rem;
             text-align: left;
+            border-bottom: 1px solid var(--border-color);
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
         }
+
         tr:hover {
-            background-color: #f5f5f5; /* 鼠标悬停时更改行的背景颜色 */
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
         }
+
+        /* 按钮样式 */
         button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--text-light);
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
+
         button:hover {
-            background-color: #45a049;
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
+
         /* 弹出表单样式 */
         .popup-form {
             display: none;
@@ -40,21 +127,59 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: var(--background-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border-color);
         }
+
+        .popup-form h2 {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .popup-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
         .popup-form input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
         }
+
+        .popup-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(230, 51, 62, 0.1);
+        }
+
         .popup-form button {
-            background-color: #2196F3;
+            margin-right: 1rem;
         }
+
+        .popup-form button:last-child {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+        }
+
+        .popup-form button:last-child:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
         .overlay {
             display: none;
             position: fixed;
@@ -62,44 +187,79 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
             z-index: 999;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            th, td {
+                padding: 0.75rem;
+            }
+        }
+
+        /* 可以添加一些动画效果 */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="/images/logo.svg" alt="Logo" class="logo">
+                <img src="/images/TRYOUT.svg" alt="TRYOUT" class="tryout">
+            </div>
+            <h2 class="subtitle">新产品内测中心</h2>
+        </div>
 
-    <h1>Product List</h1>
+        <!-- 表格结构 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- 这里的数据会被 JavaScript 动态填充 -->
+            </tbody>
+        </table>
 
-    <!-- 表格结构 -->
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            <!-- 这里的数据会被 JavaScript 动态填充 -->
-        </tbody>
-    </table>
-
-    <!-- 提交按钮 -->
-    <button id="submit-product">Submit New Product</button>
+        <!-- 提交按钮 -->
+        <button id="submit-product">Add New Product</button>
+    </div>
 
     <!-- 弹出表单 -->
     <div id="overlay" class="overlay"></div>
     <div id="popup-form" class="popup-form">
         <h2>Add New Product</h2>
-        <label for="product-name">Name:</label>
+        <label for="product-name">Name</label>
         <input type="text" id="product-name" placeholder="Enter product name">
-        <label for="product-description">Description:</label>
+        <label for="product-description">Description</label>
         <input type="text" id="product-description" placeholder="Enter product description">
         <button id="submit-form">Submit</button>
-        <button id="close-form">Close</button>
+        <button id="close-form">Cancel</button>
     </div>
 
     <script type="module" src="/src/main.js"></script>
-
 </body>
 </html>

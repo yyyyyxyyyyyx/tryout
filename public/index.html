@@ -3,23 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Products</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Product Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 20px 0;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #productForm {
+      display: none;
+      margin-top: 20px;
+    }
+    input {
+      margin: 5px;
+      padding: 8px;
+      width: 80%;
+    }
+  </style>
 </head>
 <body>
-  <h1>New Products</h1>
-  <table id="productTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Products will be dynamically added here -->
-    </tbody>
-  </table>
-  <script src="script.js"></script>
-</body>
-</html>
+  <h1>Product List</h1>
+  <button id="addProductBtn">Add New Product</button>
+  <div id="productForm">
+    <input type="text" id="productName" placeholder="Enter product name" required>
+    <input type="text" id="productDescription" placeholder="Enter product description" required>
+    <button id="submitProductBtn">Submit Product</button>
+  </div>
+  <table>
+  

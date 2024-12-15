@@ -19,6 +19,9 @@
         th {
             background-color: #f2f2f2;
         }
+        tr:hover {
+            background-color: #f5f5f5; /* 鼠标悬停时更改行的背景颜色 */
+        }
         button {
             padding: 10px 15px;
             background-color: #4CAF50;
@@ -29,6 +32,38 @@
         }
         button:hover {
             background-color: #45a049;
+        }
+        /* 弹出表单样式 */
+        .popup-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .popup-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        .popup-form button {
+            background-color: #2196F3;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
     </style>
 </head>
@@ -51,6 +86,18 @@
 
     <!-- 提交按钮 -->
     <button id="submit-product">Submit New Product</button>
+
+    <!-- 弹出表单 -->
+    <div id="overlay" class="overlay"></div>
+    <div id="popup-form" class="popup-form">
+        <h2>Add New Product</h2>
+        <label for="product-name">Name:</label>
+        <input type="text" id="product-name" placeholder="Enter product name">
+        <label for="product-description">Description:</label>
+        <input type="text" id="product-description" placeholder="Enter product description">
+        <button id="submit-form">Submit</button>
+        <button id="close-form">Close</button>
+    </div>
 
     <script>
         // 初始化 Supabase 客户端
@@ -84,12 +131,46 @@
         // 页面加载时获取数据
         window.onload = fetchProducts;
 
-        // 添加提交按钮的事件监听器（这里可以用来弹出一个表单来提交新产品）
+        // 显示弹出表单
         document.getElementById("submit-product").addEventListener("click", () => {
-            alert("This is where you can add a product submission form.");
-            // 您可以在这里弹出一个表单来提交新产品，或者直接跳转到添加产品的页面
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("popup-form").style.display = "block";
+        });
+
+        // 关闭弹出表单
+        document.getElementById("close-form").addEventListener("click", () => {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("popup-form").style.display = "none";
+        });
+
+        // 提交表单数据
+        document.getElementById("submit-form").addEventListener("click", async () => {
+            const name = document.getElementById("product-name").value;
+            const description = document.getElementById("product-description").value;
+
+            // 向 Supabase 添加新产品
+            const { data, error } = await supabase
+                .from('products')
+                .insert([
+                    { name, description }
+                ]);
+
+            if (error) {
+                console.error("Error adding product:", error);
+                return;
+            }
+
+            alert("Product added successfully!");
+
+            // 关闭弹出表单
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("popup-form").style.display = "none";
+
+            // 刷新表格数据
+            tableBody.innerHTML = "";
+            fetchProducts();
         });
     </script>
-    
+
 </body>
 </html>

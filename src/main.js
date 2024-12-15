@@ -1,8 +1,4 @@
-// Initialize Supabase client
-const { createClient } = supabase;
-const supabaseUrl = "https://gfiaqcurffdlwaoacbax.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmaWFxY3VyZmZkbHdhb2FjYmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxODUyNTMsImV4cCI6MjA0OTc2MTI1M30.1iov3e1de6nwNPMNMnLMPsnKRZrAcNFGZZLl0TigB18";
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from './supabase/supabaseClient';
 
 // DOM elements
 const tableBody = document.getElementById("table-body");

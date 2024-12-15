@@ -1,39 +1,39 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const addProductBtn = document.getElementById("addProductBtn");
-  const submitProductBtn = document.getElementById("submitProductBtn");
-  const productForm = document.getElementById("productForm");
-  const productTableBody = document.getElementById("productTableBody");
+// 加载 .env.local 中的环境变量（仅适用于本地开发）
+require('dotenv').config();
 
-  let productCount = 0;
+// 初始化 Supabase 客户端，使用环境变量中的 URL 和密钥
+const supabase = supabase.createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-  // 显示/隐藏输入表单
-  addProductBtn.addEventListener("click", () => {
-    productForm.style.display = productForm.style.display === "none" ? "block" : "none";
-  });
+// 获取表格元素
+const tableBody = document.getElementById("table-body");
 
-  // 提交新产品
-  submitProductBtn.addEventListener("click", () => {
-    const productName = document.getElementById("productName").value.trim();
-    const productDescription = document.getElementById("productDescription").value.trim();
+// 从 Supabase 获取产品数据
+async function fetchProducts() {
+    const { data, error } = await supabase
+        .from('products') // 连接到 'products' 表
+        .select('*'); // 获取所有字段的数据
 
-    if (productName && productDescription) {
-      productCount++;
-
-      // 添加新行到表格
-      const newRow = document.createElement("tr");
-      newRow.innerHTML = `
-        <td>${productCount}</td>
-        <td>${productName}</td>
-        <td>${productDescription}</td>
-      `;
-      productTableBody.appendChild(newRow);
-
-      // 清空输入框
-      document.getElementById("productName").value = "";
-      document.getElementById("productDescription").value = "";
-      productForm.style.display = "none"; // 隐藏表单
-    } else {
-      alert("Please fill in all fields!");
+    if (error) {
+        console.error("Error fetching data:", error);
+        return;
     }
-  });
+
+    // 动态填充表格
+    data.forEach(product => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${product.name}</td>
+            <td>${product.description}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// 页面加载时获取数据
+window.onload = fetchProducts;
+
+// 添加提交按钮的事件监听器（这里可以用来弹出一个表单来提交新产品）
+document.getElementById("submit-product").addEventListener("click", () => {
+    alert("This is where you can add a product submission form.");
+    // 您可以在这里弹出一个表单来提交新产品，或者直接跳转到添加产品的页面
 });

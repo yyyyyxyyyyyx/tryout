@@ -1,3 +1,5 @@
+const { createClient } = supabase;
+
 // 初始化 Supabase 客户端（在浏览器环境中直接引入）
 const supabaseUrl = "https://gfiaqcurffdlwaoacbax.supabase.co"; // 替换为您的 Supabase URL
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmaWFxY3VyZmZkbHdhb2FjYmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxODUyNTMsImV4cCI6MjA0OTc2MTI1M30.1iov3e1de6nwNPMNMnLMPsnKRZrAcNFGZZLl0TigB18"; // 替换为您的 Supabase Anon Key

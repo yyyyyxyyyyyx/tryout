@@ -1,4 +1,3 @@
-const { createClient } = supabase;
 
 // 初始化 Supabase 客户端（在浏览器环境中直接引入）
 const supabaseUrl = "https://gfiaqcurffdlwaoacbax.supabase.co"; // 替换为您的 Supabase URL

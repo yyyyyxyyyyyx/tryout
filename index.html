@@ -42,6 +42,7 @@
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .logo {
@@ -61,8 +62,10 @@
             color: var(--text-light);
             font-size: 1.2rem;
             font-weight: normal;
-            margin-top: 0.5rem;
+            margin-top: 1.5rem;
             opacity: 0.8;
+            display: inline-block;
+            width: fit-content;
         }
 
         .container {
@@ -219,6 +222,82 @@
                 transform: translateY(0px);
             }
         }
+
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid var(--primary-color);
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 0.15em;
+            animation: typing 2.1s steps(7, end), blink-caret 0.75s step-end infinite;
+            width: 8.4em;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 8.4em }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary-color) }
+        }
+
+        .quote-container {
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 800px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .quote-text {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            letter-spacing: 0.08em;
+            opacity: 0.4;
+            font-weight: 300;
+            transition: opacity 0.5s ease;
+        }
+
+        .quote-text:hover {
+            opacity: 0.7;
+        }
+
+        .subtitle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subtitle-en {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+            font-weight: 300;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .like-btn, .dislike-btn {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .like-btn:hover, .dislike-btn:hover {
+            opacity: 0.8;
+        }
+
+        .popup-form input[type="file"] {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -228,19 +307,25 @@
                 <img src="/images/logo.svg" alt="Logo" class="logo">
                 <img src="/images/TRYOUT.svg" alt="TRYOUT" class="tryout">
             </div>
-            <h2 class="subtitle">新产品内测中心</h2>
+            <div class="subtitle-container">
+                <h2 class="subtitle typing-effect">新产品内测中心</h2>
+                <span class="subtitle-en">Product Beta Testing Center</span>
+            </div>
         </div>
 
         <!-- 表格结构 -->
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Logo</th>
+                    <th>Product</th>
+                    <th>One-liner</th>
+                    <th>Beta Tester</th>
+                    <th>Up or Down</th>
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- 这里的数据会被 JavaScript 动态填充 -->
+                <!-- 数据将通过 JavaScript 填充 -->
             </tbody>
         </table>
 
@@ -251,13 +336,25 @@
     <!-- 弹出表单 -->
     <div id="overlay" class="overlay"></div>
     <div id="popup-form" class="popup-form">
-        <h2>Add New Product</h2>
-        <label for="product-name">Name</label>
-        <input type="text" id="product-name" placeholder="Enter product name">
-        <label for="product-description">Description</label>
-        <input type="text" id="product-description" placeholder="Enter product description">
+        <h2>Add your product!</h2>
+        <label for="product-name">Product</label>
+        <input type="text" id="product-name" placeholder="Enter your product name">
+        
+        <label for="product-description">One-liner</label>
+        <input type="text" id="product-description" placeholder="Describe your product in one sentence">
+        
+        <label for="product-logo">Logo</label>
+        <input type="file" id="product-logo" accept="image/*">
+        
+        <label for="product-requirement">Beta Tester</label>
+        <input type="text" id="product-requirement" placeholder="Describe whom you're looking for">
+        
         <button id="submit-form">Submit</button>
         <button id="close-form">Cancel</button>
+    </div>
+
+    <div class="quote-container">
+        <p class="quote-text">我想到遥远遥远的以后 会不会有人知道我 在这个寂寞的星球 曾这样的活过</p>
     </div>
 
     <script type="module" src="/src/main.js"></script>

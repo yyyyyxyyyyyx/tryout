@@ -17,8 +17,13 @@ async function fetchProducts() {
   tableBody.innerHTML = ''; // 清空现有内容
 
   data.forEach((product) => {
+    const logoImage = product.logo_url && product.logo_url.startsWith('http') ? 
+      `<img src="${product.logo_url}" alt="${product.name} logo" style="width: 50px; height: 50px; object-fit: contain;">` : 
+      '无 Logo'; // 处理 logo_url 为 null 或无效的情况
+
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
+      <td>${logoImage}</td> <!-- 添加 Logo -->
       <td>${product.name}</td>
       <td>${product.description}</td>
     `;

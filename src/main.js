@@ -51,13 +51,25 @@ async function handleLike(productId, action) {
 
         if (updateError) throw updateError;
 
+        // 重新获取最新数据
+        const { data: updatedData, error: fetchError } = await supabase
+            .from('products')
+            .select('likes, dislikes')
+            .eq('id', productId)
+            .single();
+
+        if (fetchError) {
+            console.error("获取更新数据失败:", fetchError);
+            return;
+        }
+
         // 更新表格中的相应行
         const likeButton = document.querySelector(`button[onclick="handleLike(${productId}, 'like')"]`);
         const dislikeButton = document.querySelector(`button[onclick="handleLike(${productId}, 'dislike')"]`);
         
         // 更新按钮文本
-        likeButton.innerText = `👍 ${updateData.likes}`; // 更新为当前值
-        dislikeButton.innerText = `👎 ${updateData.dislikes}`; // 更新为当前值
+        likeButton.innerText = `👍 ${updatedData.likes}`; // 使用最新的点赞数
+        dislikeButton.innerText = `👎 ${updatedData.dislikes}`; // 使用最新的点踩数
 
     } catch (e) {
         console.error("操作失败:", e);
@@ -69,34 +81,28 @@ async function fetchProducts() {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*');
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (error) {
             console.error("获取数据失败:", error);
             return;
         }
 
-        console.log("获取到的数据:", data); // 添加日志
-
-        clearTable(); // 清空现有数据
+        tableBody.innerHTML = ''; // 清空现有表格内容
 
         // Populate table with data
         data.forEach(product => {
+            console.log("Logo URL:", product.logo_url); // 调试输出
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>
-                    <img src="${product.logo_url}" alt="${product.name} logo" style="width: 50px; height: 50px; object-fit: contain;">
-                </td>
+                <td><img src="${product.logo_url}" alt="${product.name} logo" style="width: 50px; height: 50px; object-fit: contain;"></td>
                 <td>${product.name}</td>
                 <td>${product.description}</td>
-                <td>${product.requirement}</td>
+                <td>${product.requirement || 'null'}</td>
                 <td>
-                    <button onclick="handleLike(${product.id}, 'like')" class="like-btn">
-                        👍 ${product.likes}
-                    </button>
-                    <button onclick="handleLike(${product.id}, 'dislike')" class="dislike-btn">
-                        👎 ${product.dislikes}
-                    </button>
+                    <button onclick="handleLike(${product.id}, 'like')" class="like-btn">👍 ${product.likes}</button>
+                    <button onclick="handleLike(${product.id}, 'dislike')" class="dislike-btn">👎 ${product.dislikes}</button>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -123,9 +129,6 @@ function hideForm() {
 
 // 提交新产品
 async function submitNewProduct() {
-    console.log("开始提交新产品");
-    const startTime = Date.now();
-
     const name = document.getElementById("product-name").value;
     const description = document.getElementById("product-description").value;
     const requirement = document.getElementById("product-requirement").value;
@@ -144,11 +147,22 @@ async function submitNewProduct() {
             .upload(logoPath, logoFile);
 
         if (uploadError) {
-            console.error("上传错误:", uploadError);
-            return;
+            throw uploadError;
         }
 
-        console.log("图片上传完成，耗时:", Date.now() - startTime, "ms");
+        // 构建完整的 logo URL
+        const { data: publicUrlData, error: publicUrlError } = supabase
+        .storage
+        .from('logos')
+        .getPublicUrl(logoPath);
+        
+        if (publicUrlError) {
+            console.error("生成公共 URL 失败:", publicUrlError);
+            throw publicUrlError;
+        }
+        
+        const logoUrl = publicUrlData.publicUrl; // 这才是正确的公共 URL
+        console.log("生成的 Logo URL:", logoUrl); // 打印生成的 URL
 
         // 然后插入产品数据
         const { error } = await supabase
@@ -157,7 +171,7 @@ async function submitNewProduct() {
                 name, 
                 description, 
                 requirement,
-                logo_url: logoPath,
+                logo_url: logoUrl, // 使用完整的 URL
                 likes: 0,
                 dislikes: 0
             }]);
@@ -166,7 +180,14 @@ async function submitNewProduct() {
             throw error;
         }
 
-        console.log("新产品提交完成，耗时:", Date.now() - startTime, "ms");
+        console.log("插入的数据:", { 
+            name, 
+            description, 
+            requirement,
+            logo_url: logoUrl,
+            likes: 0,
+            dislikes: 0
+        });
 
         hideForm();
         fetchProducts();

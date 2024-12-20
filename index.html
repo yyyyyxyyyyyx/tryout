@@ -230,12 +230,13 @@
             margin: 0 auto;
             letter-spacing: 0.15em;
             animation: typing 2.1s steps(7, end), blink-caret 0.75s step-end infinite;
-            width: 8.4em;
+            width: 20em;
+            padding-right: 5px;
         }
 
         @keyframes typing {
             from { width: 0 }
-            to { width: 8.4em }
+            to { width: 25em }
         }
 
         @keyframes blink-caret {
@@ -298,6 +299,53 @@
         .popup-form input[type="file"] {
             margin: 10px 0;
         }
+
+        /* 下拉菜单样式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            padding: 10px 15px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .dropbtn:hover {
+            border-color: #45a049;
+            box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
+        }
+
+        .dropdown-content {
+            display: none; /* 默认隐藏 */
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 显示下拉菜单 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -308,9 +356,14 @@
                 <img src="/images/TRYOUT.svg" alt="TRYOUT" class="tryout">
             </div>
             <div class="subtitle-container">
-                <h2 class="subtitle typing-effect">新产品内测中心</h2>
-                <span class="subtitle-en">Product Beta Testing Center</span>
+                <h2 class="subtitle typing-effect">New Product Beta Testing Center</h2>
+                <span class="subtitle-en">Post your new product</span>
             </div>
+        </div>
+
+        <!-- 添加新产品按钮 -->
+        <div style="text-align: right; margin-bottom: 20px;">
+            <button id="add-product" style="padding: 10px 20px; background-color: #E6333E; color: white; border: none; border-radius: 5px; cursor: pointer;">Add New Product</button>
         </div>
 
         <!-- 表格结构 -->
@@ -321,7 +374,15 @@
                     <th>Product</th>
                     <th>One-liner</th>
                     <th>Beta Tester</th>
-                    <th>Up or Down</th>
+                    <th>
+                        <div class="dropdown">
+                            <button id="sort-button" class="dropbtn">Sort ▼</button>
+                            <div id="sort-options" class="dropdown-content">
+                                <a href="#" id="sort-date">Sort by Date</a>
+                                <a href="#" id="sort-likes">Sort by Likes</a>
+                            </div>
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -329,8 +390,11 @@
             </tbody>
         </table>
 
-        <!-- 提交按钮 -->
-        <button id="submit-product">Add New Product</button>
+        <!-- 分页按钮 -->
+        <div id="pagination" style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+            <button id="prev-page" style="margin-right: 10px;" disabled>Prev</button>
+            <button id="next-page" style="margin-left: 10px;">Next</button>
+        </div>
     </div>
 
     <!-- 弹出表单 -->
@@ -349,8 +413,8 @@
         <label for="product-requirement">Beta Tester</label>
         <input type="text" id="product-requirement" placeholder="Describe whom you're looking">
         
-        <button id="submit-form">提交</button>
-        <button id="close-form">取消</button>
+        <button id="submit-form">Submit</button>
+        <button id="close-form">Cancel</button>
     </div>
 
     <div class="quote-container">

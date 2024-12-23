@@ -2,11 +2,15 @@ import { supabase } from './supabase/supabaseClient';
 
 // DOM elements
 const tableBody = document.getElementById("table-body");
-const submitButton = document.getElementById("submit-product");
+const submitButton = document.getElementById("add-product");
 const popupForm = document.getElementById("popup-form");
 const overlay = document.getElementById("overlay");
 const closeFormButton = document.getElementById("close-form");
 const submitFormButton = document.getElementById("submit-form");
+const prevPageButton = document.getElementById("prev-page");
+const nextPageButton = document.getElementById("next-page");
+const floatingButton = document.getElementById("floating-button");
+const addProductIcon = document.getElementById("add-product-icon");
 
 // 初始化变量
 let productsData = []; // 存储产品数据
@@ -86,7 +90,7 @@ async function fetchProducts() {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select('*') // 确保包含 created_at 字段
             .order('created_at', { ascending: false });
 
         if (error) {
@@ -95,7 +99,6 @@ async function fetchProducts() {
         }
 
         productsData = data; // 存储获取的数据
-        currentPage = 1; // 重置当前页
         renderProducts(productsData); // 渲染产品
     } catch (e) {
         console.error("获取数据失败:", e);
@@ -187,7 +190,7 @@ async function submitNewProduct() {
     }
 }
 
-// 渲染产品的函数
+// 渲染产品
 function renderProducts(data) {
     const tableBody = document.getElementById("table-body");
     tableBody.innerHTML = ''; // 清空现有表格内容
@@ -197,18 +200,10 @@ function renderProducts(data) {
     const endIndex = startIndex + itemsPerPage;
     const paginatedData = data.slice(startIndex, endIndex);
 
-    // 检查是否有数据
-    if (paginatedData.length === 0) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td colspan="5" style="text-align: center;">没有数据可显示</td>`;
-        tableBody.appendChild(row);
-        return;
-    }
-
     paginatedData.forEach(product => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td><img src="${product.logo_url || '无 Logo'}" alt="${product.name} logo" style="width: 50px; height: 50px; object-fit: contain;"></td>
+            <td><img src="${product.logo_url}" alt="${product.name} logo" style="width: 50px; height: 50px; object-fit: contain;"></td>
             <td>${product.name}</td>
             <td>${product.description}</td>
             <td>${product.requirement || 'null'}</td>
@@ -225,56 +220,52 @@ function renderProducts(data) {
     document.getElementById("next-page").disabled = endIndex >= data.length;
 }
 
-// 分页按钮事件监听器
-document.getElementById("prev-page").addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;
-        renderProducts(productsData);
-    }
-});
-
-document.getElementById("next-page").addEventListener("click", () => {
-    if ((currentPage * itemsPerPage) < productsData.length) {
-        currentPage++;
-        renderProducts(productsData);
-    }
-});
-
 // Event listeners
 window.onload = () => {
     fetchProducts();
-    
+
     // 绑定事件监听器
-    document.getElementById("sort-date").addEventListener("click", (event) => {
-        event.preventDefault(); // 防止链接跳转
-        sortByDate();
+    submitButton.addEventListener("click", showForm);
+    closeFormButton.addEventListener("click", hideForm);
+    overlay.addEventListener("click", hideForm);
+    submitFormButton.addEventListener("click", submitNewProduct);
+    window.handleLike = handleLike; // 使函数在全局可用
+
+    // 分页按钮事件监听器
+    prevPageButton.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderProducts(productsData);
+        }
     });
 
-    document.getElementById("sort-likes").addEventListener("click", (event) => {
-        event.preventDefault(); // 防止链接跳转
-        sortByLikes();
+    nextPageButton.addEventListener("click", () => {
+        if ((currentPage * itemsPerPage) < productsData.length) {
+            currentPage++;
+            renderProducts(productsData);
+        }
     });
 
-    // 绑定添加新产品按钮的事件监听器
-    document.getElementById("add-product").addEventListener("click", showForm);
-    document.getElementById("close-form").addEventListener("click", hideForm);
-    document.getElementById("overlay").addEventListener("click", hideForm);
-    document.getElementById("submit-form").addEventListener("click", submitNewProduct);
+    // 排序按钮事件监听器
+    document.getElementById("sort-date").addEventListener("click", () => {
+        productsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // 按日期降序排序
+        renderProducts(productsData);
+    });
+
+    document.getElementById("sort-likes").addEventListener("click", () => {
+        productsData.sort((a, b) => b.likes - a.likes); // 按点赞数降序排序
+        renderProducts(productsData);
+    });
+
+    // 显示或隐藏图标按钮
+    window.onscroll = function() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            floatingButton.style.display = "block"; // 滚动超过100px时显示按钮
+        } else {
+            floatingButton.style.display = "none"; // 否则隐藏按钮
+        }
+    };
+
+    // 点击图标按钮时显示弹出表单
+    addProductIcon.addEventListener("click", showForm);
 };
-
-// 排序函数
-function sortByDate() {
-    const sortedData = [...productsData].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    renderProducts(sortedData);
-}
-
-function sortByLikes() {
-    const sortedData = [...productsData].sort((a, b) => b.likes - a.likes);
-    renderProducts(sortedData);
-}
-
-// 添加事件监听器
-document.getElementById("sort-date").addEventListener("click", sortByDate);
-document.getElementById("sort-likes").addEventListener("click", sortByLikes);
-
-window.handleLike = handleLike; // 使函数在全局可用

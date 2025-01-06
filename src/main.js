@@ -11,11 +11,21 @@ const prevPageButton = document.getElementById("prev-page");
 const nextPageButton = document.getElementById("next-page");
 const floatingButton = document.getElementById("floating-button");
 const addProductIcon = document.getElementById("add-product-icon");
+const searchInput = document.getElementById("searchInput");
+const cardsContainer = document.getElementById("cards-container");
+const sortDateBtn = document.getElementById("sort-date");
+const sortLikesBtn = document.getElementById("sort-likes");
 
 // 初始化变量
 let productsData = []; // 存储产品数据
+let filteredProducts = []; // 存储过滤后的产品数据
 let currentPage = 1; // 当前页数
-const itemsPerPage = 10; // 每页显示的项目数
+const itemsPerPage = 8; // 每页显示8个卡片
+
+// 清空卡片容器的函数
+function clearContainer() {
+    cardsContainer.innerHTML = '';
+}
 
 // 清空表格内容的函数
 function clearTable() {
@@ -99,7 +109,8 @@ async function fetchProducts() {
         }
 
         productsData = data; // 存储获取的数据
-        renderProducts(productsData); // 渲染产品
+        filteredProducts = [...productsData]; // 初始化过滤后的数据
+        renderProducts(); // 渲染产品列表
     } catch (e) {
         console.error("获取数据失败:", e);
     }
@@ -190,40 +201,75 @@ async function submitNewProduct() {
     }
 }
 
-// 渲染产品
-function renderProducts(data) {
-    const tableBody = document.getElementById("table-body");
-    tableBody.innerHTML = ''; // 清空现有表格内容
-
+// 渲染产品列表
+function renderProducts() {
+    clearContainer();
+    
     // 计算当前页的数据
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedData = data.slice(startIndex, endIndex);
+    const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-    paginatedData.forEach(product => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td><img src="${product.logo_url}" alt="${product.name} logo" style="width: 50px; height: 50px; object-fit: contain;"></td>
-            <td>${product.name}</td>
-            <td>${product.description}</td>
-            <td>${product.requirement || 'null'}</td>
-            <td>
-                <button onclick="handleLike(${product.id}, 'like')" class="like-btn">👍 ${product.likes}</button>
-                <button onclick="handleLike(${product.id}, 'dislike')" class="dislike-btn">👎 ${product.dislikes}</button>
-            </td>
+    currentProducts.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        
+        card.innerHTML = `
+            <div class="logo-wrapper">
+                <img src="${product.logo_url}" alt="${product.name} logo">
+            </div>
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <p class="beta-tester">Looking for: ${product.requirement}</p>
+            <div class="card-footer">
+                <div class="interaction-buttons">
+                    <button onclick="handleLike(${product.id}, 'like')">
+                        👍 ${product.likes || 0}
+                    </button>
+                    <button onclick="handleLike(${product.id}, 'dislike')">
+                        👎 ${product.dislikes || 0}
+                    </button>
+                </div>
+                <small>${new Date(product.created_at).toLocaleDateString()}</small>
+            </div>
         `;
-        tableBody.appendChild(row);
+        
+        cardsContainer.appendChild(card);
     });
 
     // 更新分页按钮状态
-    document.getElementById("prev-page").disabled = currentPage === 1;
-    document.getElementById("next-page").disabled = endIndex >= data.length;
+    updatePaginationButtons();
+}
+
+// 搜索功能
+function handleSearch(event) {
+    const searchTerm = event.target.value.toLowerCase();
+    
+    // 过滤产品数据
+    filteredProducts = productsData.filter(product => 
+        product.name?.toLowerCase().includes(searchTerm) || 
+        product.description?.toLowerCase().includes(searchTerm)
+    );
+    
+    // 重置到第一页并重新渲染
+    currentPage = 1;
+    renderProducts();
+    
+    // 更新分页按钮状态
+    updatePaginationButtons();
+}
+
+// 更新分页按钮状态
+function updatePaginationButtons() {
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    prevPageButton.disabled = currentPage === 1;
+    nextPageButton.disabled = currentPage === totalPages || totalPages === 0;
 }
 
 // Event listeners
-window.onload = () => {
-    fetchProducts();
-
+window.onload = async () => {
+    await fetchProducts();
+    
     // 绑定事件监听器
     submitButton.addEventListener("click", showForm);
     closeFormButton.addEventListener("click", hideForm);
@@ -235,26 +281,28 @@ window.onload = () => {
     prevPageButton.addEventListener("click", () => {
         if (currentPage > 1) {
             currentPage--;
-            renderProducts(productsData);
+            renderProducts();
         }
     });
 
     nextPageButton.addEventListener("click", () => {
-        if ((currentPage * itemsPerPage) < productsData.length) {
+        if ((currentPage * itemsPerPage) < filteredProducts.length) {
             currentPage++;
-            renderProducts(productsData);
+            renderProducts();
         }
     });
 
     // 排序按钮事件监听器
-    document.getElementById("sort-date").addEventListener("click", () => {
-        productsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // 按日期降序排序
-        renderProducts(productsData);
+    sortDateBtn.addEventListener("click", () => {
+        filteredProducts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        currentPage = 1; // 重置到第一页
+        renderProducts();
     });
 
-    document.getElementById("sort-likes").addEventListener("click", () => {
-        productsData.sort((a, b) => b.likes - a.likes); // 按点赞数降序排序
-        renderProducts(productsData);
+    sortLikesBtn.addEventListener("click", () => {
+        filteredProducts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        currentPage = 1; // 重置到第一页
+        renderProducts();
     });
 
     // 显示或隐藏图标按钮
@@ -268,4 +316,7 @@ window.onload = () => {
 
     // 点击图标按钮时显示弹出表单
     addProductIcon.addEventListener("click", showForm);
+
+    // 添加搜索框事件监听
+    searchInput.addEventListener('input', handleSearch);
 };

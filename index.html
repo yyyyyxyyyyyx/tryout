@@ -79,49 +79,267 @@
             backdrop-filter: blur(10px);
         }
 
-        /* 表格样式 */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 1rem 0;
+        /* 操作区域样式 */
+        .action-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            margin-bottom: 2rem;
+            gap: 1rem;
         }
 
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
+        /* 搜索框容器样式 */
+        .search-container {
+            flex: 1;
+            position: relative;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
         }
 
-        th {
-            background-color: rgba(255, 255, 255, 0.05);
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
             color: var(--text-gray);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-            letter-spacing: 0.05em;
+            pointer-events: none;
+            z-index: 1;
+            font-size: 0.9rem;
         }
 
-        tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
-        }
-
-        /* 按钮样式 */
-        button {
-            padding: 0.75rem 1.5rem;
-            background-color: var(--primary-color);
+        .search-input {
+            width: 100%;
+            height: 42px;
+            padding: 0 1rem 0 3rem;
+            font-size: 1rem;
             color: var(--text-light);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 2px rgba(230, 51, 62, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 按钮容器样式 */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            height: 42px;
+        }
+
+        /* 添加按钮样式 */
+        .add-button {
+            height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            font-size: 1rem;
             font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .add-button:hover {
+            background-color: #d12e2e;
+            transform: translateY(-1px);
+        }
+
+        /* 下拉菜单样式 */
+        .dropdown {
+            height: 42px;
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            min-width: 160px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content button {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            text-align: left;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-content button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Sort按钮特殊样式 */
+        .sort-button {
+            height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .sort-button:hover {
+            background-color: #d12e2e;
+        }
+
+        /* 卡片容器样式 */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 卡片样式 */
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .product-card .logo-wrapper {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-light);
+        }
+
+        .product-card p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 0.8rem;
+        }
+
+        .product-card .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .product-card .interaction-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .product-card button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 6px;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .product-card button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        /* 分页按钮样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:not(:disabled):hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* 弹出表单样式 */
@@ -134,16 +352,16 @@
             background-color: var(--background-color);
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
             width: 90%;
             max-width: 500px;
-            border: 1px solid var(--border-color);
         }
 
         .popup-form h2 {
-            color: var(--text-light);
             margin-bottom: 1.5rem;
+            color: var(--text-light);
             font-size: 1.5rem;
         }
 
@@ -151,49 +369,68 @@
             display: block;
             margin-bottom: 0.5rem;
             color: var(--text-gray);
-            font-weight: 500;
         }
 
         .popup-form input {
             width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.2rem;
+            background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
             color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .popup-form input:focus {
-            outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(230, 51, 62, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
+            outline: none;
         }
 
-        .popup-form button {
-            margin-right: 1rem;
+        /* 表单按钮容器 */
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .popup-form button:last-child {
+        /* Submit按钮样式 */
+        .submit-button {
+            flex: 1;
+            height: 42px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #d12e2e;
+        }
+
+        /* Cancel按钮样式 */
+        .cancel-button {
+            flex: 1;
+            height: 42px;
             background-color: transparent;
+            color: var(--text-light);
             border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .popup-form button:last-child:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 999;
+        .cancel-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
         }
 
         /* 响应式设计 */
@@ -301,80 +538,38 @@
             margin: 10px 0;
         }
 
-        /* 下拉菜单样式 */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropbtn {
-            padding: 10px 15px;
-            border: 1px solid #4CAF50;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #333;
-            font-size: 16px;
-            cursor: pointer;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .dropbtn:hover {
-            border-color: #45a049;
-            box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
-        }
-
-        .dropdown-content {
-            display: none; /* 默认隐藏 */
-            position: absolute;
-            background-color: #fff;
-            min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* 显示下拉菜单 */
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
         /* 图标按钮样式 */
         #floating-button {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 1000; /* 确保在最上层 */
-            display: none; /* 默认隐藏 */
+            z-index: 1000;
+            display: none;
         }
 
         #add-product-icon {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 50%; /* 确保按钮是圆形 */
-            width: 60px; /* 设置固定宽度 */
-            height: 60px; /* 设置固定高度 */
-            display: flex; /* 使用 flexbox */
-            align-items: center; /* 垂直居中 */
-            justify-content: center; /* 水平居中 */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s;
-            font-size: 24px; /* 增加图标大小 */
+            font-size: 24px;
         }
 
         #add-product-icon:hover {
-            background-color: #d12e2e; /* 悬停时稍微变暗 */
+            background-color: #d12e2e;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 1.5rem;
         }
     </style>
     <script type="text/javascript">
@@ -390,47 +585,56 @@
         <div class="header">
             <div class="logo-container">
                 <img src="/images/logo.svg" alt="Logo" class="logo">
-                <img src="/images/TRYOUT.svg" alt="TRYOUT" class="tryout">
+                <img src="/images/TRYOUT.svg" alt="Tryout" class="tryout">
             </div>
             <div class="subtitle-container">
                 <h2 class="subtitle typing-effect">New Product Beta Testing Center</h2>
                 <span class="subtitle-en">Post your new product</span>
             </div>
         </div>
-
-        <!-- 添加新产品按钮 -->
-        <div style="text-align: right; margin-bottom: 20px;">
-            <button id="add-product" style="padding: 10px 20px; background-color: #d12e2e; color: white; border: none; border-radius: 5px; cursor: pointer;">Add New Product</button>
+        <!-- 搜索框和操作按钮的容器 -->
+        <div class="action-container">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Enter product or description..." class="search-input">
+            </div>
+            <div class="action-buttons">
+                <div class="dropdown">
+                    <button class="sort-button">
+                        <i class="fas fa-sort"></i>
+                        Sort
+                    </button>
+                    <div class="dropdown-content">
+                        <button id="sort-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            Sort by Date
+                        </button>
+                        <button id="sort-likes">
+                            <i class="fas fa-thumbs-up"></i>
+                            Sort by Likes
+                        </button>
+                    </div>
+                </div>
+                <button id="add-product" class="add-button">
+                    <i class="fas fa-plus"></i>
+                    Add New Product
+                </button>
+            </div>
         </div>
 
-        <!-- 表格结构 -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Logo</th>
-                    <th>Product</th>
-                    <th>One-liner</th>
-                    <th>Beta Tester</th>
-                    <th>
-                        <div class="dropdown">
-                            <button id="sort-button" class="dropbtn">Sort ▼</button>
-                            <div id="sort-options" class="dropdown-content">
-                                <a href="#" id="sort-date">Sort by Date</a>
-                                <a href="#" id="sort-likes">Sort by Likes</a>
-                            </div>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- 数据将通过 JavaScript 填充 -->
-            </tbody>
-        </table>
+        <!-- 卡片容器 -->
+        <div class="cards-container" id="cards-container">
+            <!-- 卡片将通过JavaScript动态添加 -->
+        </div>
 
-        <!-- 提交按钮 -->
-        <div id="pagination" style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
-            <button id="prev-page" style="margin-right: 10px;" disabled>上一页</button>
-            <button id="next-page" style="margin-left: 10px;">下一页</button>
+        <!-- 分页按钮 -->
+        <div id="pagination" class="pagination">
+            <button id="prev-page" disabled>
+                <i class="fas fa-chevron-left"></i> Prev
+            </button>
+            <button id="next-page">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
@@ -450,8 +654,10 @@
         <label for="product-requirement">Beta Tester</label>
         <input type="text" id="product-requirement" placeholder="Describe whom you're looking">
         
-        <button id="submit-form">Submit</button>
-        <button id="close-form">Cancel</button>
+        <div class="form-buttons">
+            <button id="submit-form" class="submit-button">Submit</button>
+            <button id="close-form" class="cancel-button">Cancel</button>
+        </div>
     </div>
 
     <!-- 添加新产品图标按钮 -->
